@@ -1,13 +1,9 @@
 var myGamePiece;
 
-function startGame() {
-	myGamePiece = new component(30, 45, "tank.png", 10, 120, "image");
-    myGameArea.start();
-}
 
 var myGameArea = {
-    canvas : document.createElement("canvas"),
-    start : function() {
+    canvas: document.createElement("canvas"),
+    start: function () {
         this.canvas.width = 480;
         this.canvas.height = 270;
         this.context = this.canvas.getContext("2d");
@@ -23,45 +19,41 @@ var myGameArea = {
             myGameArea.keys[e.keyCode] = (e.type == "keydown");
         })
     },
-    stop : function() {
+    stop: function () {
         clearInterval(this.interval);
-    },    
-    clear : function() {
+    },
+    clear: function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
 
 function component(width, height, color, x, y, type) {
 
+    ctx = myGameArea.context;
+    //ctx.drawImage(image, this.x, this.y, this.width, this.height);
+
     this.type = type;
-	if (type == "image") {
-		this.image = new Image();
-		this.image.src = color;
-	  }
+    this.image = new Image();
+    this.image.src = color;
+
     this.width = width;
     this.height = height;
     this.speed = 0;
     this.angle = 0;
     this.moveAngle = 0;
     this.x = x;
-    this.y = y;    
-    this.update = function() {
+    this.y = y;
+
+    this.update = function () {
         ctx = myGameArea.context;
-		if (type == "image") {
-			ctx.save();
-			ctx.drawImage(this.image,
-			this.x,
-			this.y,
-			this.width, this.height);
-			/* ctx.save(); */
-			ctx.translate(this.x, this.y);
-			ctx.rotate(this.angle);
-			/* ctx.fillStyle = color; */
-			ctx.fillRect(this.width / -2, this.height / -2, this.width, this.height);
-			ctx.restore();
-		} 
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+        ctx.drawImage(this.image, this.width / -2, this.height / -2, this.width, this.height);
+        ctx.restore();
     }
-    this.newPos = function() {
+
+    this.newPos = function () {
         this.angle += this.moveAngle * Math.PI / 180;
         this.x += this.speed * Math.sin(this.angle);
         this.y -= this.speed * Math.cos(this.angle);
@@ -72,10 +64,16 @@ function updateGameArea() {
     myGameArea.clear();
     myGamePiece.moveAngle = 0;
     myGamePiece.speed = 0;
-    if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.moveAngle = -1; }
-    if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.moveAngle = 1; }
-    if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speed= 1; }
-    if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speed= -1; }
+    if (myGameArea.keys && myGameArea.keys[37]) { myGamePiece.moveAngle = -1; }
+    if (myGameArea.keys && myGameArea.keys[39]) { myGamePiece.moveAngle = 1; }
+    if (myGameArea.keys && myGameArea.keys[38]) { myGamePiece.speed = 1; }
+    if (myGameArea.keys && myGameArea.keys[40]) { myGamePiece.speed = -1; }
     myGamePiece.newPos();
     myGamePiece.update();
+}
+
+
+function startGame() {
+    myGamePiece = new component(30, 45, "tank.png", 10, 120, "image");
+    myGameArea.start();
 }
